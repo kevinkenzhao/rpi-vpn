@@ -19,3 +19,14 @@ The easiest way to install an OpenVPN onto your Pi 4 device is to run the follow
 curl -L https://install.pivpn.io | bash
 ```
 During installation, you will be prompted to configure items like a static IP address, OpenVPN server port number, upstream DNS resolver (can be Cloudflare's 1.1.1.1 for now, but will be changed to the IP address of Pi-Hole once it is configured), and whether personal devices will be connecting via your home router's public IP address or a DNS name. This [video](https://www.youtube.com/watch?v=15VjDVCISj0) covers how to set up OpenVPN on a Pi in reasonable depth.
+
+## High Level Description of Scripts Used
+
+**firewall-openvpn-rules.sh** applies iptables NAT and Forwarding rules between the tunnels from our OpenVPN client(s) to the OpenVPN server and from the Pi to ProtonVPN.
+
+**up.sh** is executed upon connection to ProtonVPN. To achieve this, we must include the following in our .ovpn config file which we had downloaded from the ProtonVPN portal:
+```
+script-security 2
+up /etc/openvpn/up.sh
+```
+Similarly, **down.sh** is executed upon teardown of connection to ProtonVPN.

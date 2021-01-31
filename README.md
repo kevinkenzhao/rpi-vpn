@@ -1,7 +1,7 @@
 # rpi-vpn
 
 
-This project explores the prospect of converting a Raspberry Pi 4 Model B device into both an OpenVPN server (to which we could connect from personal devices) and client (from which we could connect to a third-party provider like ProtonVPN). When a personal device is successfully connected to our OpenVPN server, it should be able to access Samba services provided by the Pi and all DNS traffic should be routed through the Pi-Hole service living in a Docker container, which will be managed by Portainer. All external traffic should tunnel through the virtual adapter associated with ProtonVPN (see **.
+This project explores the prospect of converting a Raspberry Pi 4 Model B device into both an OpenVPN server (to which we could connect from personal devices) and client (from which we could connect to a third-party provider like ProtonVPN). When a personal device is successfully connected to our OpenVPN server, it should be able to access Samba services provided by the Pi and all DNS traffic should be routed through the Pi-Hole service living in a Docker container, which will be managed by Portainer. All external traffic should tunnel through the virtual adapter associated with ProtonVPN (see **Remediating DNS Leak**.)
 
 To achieve the flow described above, we will create three bash scripts and make minor adjustments to the openvpn/server.conf file on the Pi.
 
@@ -11,6 +11,12 @@ To achieve the flow described above, we will create three bash scripts and make 
 - OpenMediaVault with SMB/CIFS enabled, OMV-Extras (Docker and Portainer) installed
 - Pihole (Docker image)
 - Subscription to 3rd Party VPN service and their respective .ovpn client configuration files
+
+## Static IP Addresses
+
+Raspberry Pi: 192.168.0.4/24
+OpenVPN server virtual network: 10.8.0.0/24
+Pi-hole: 192.168.0.100
 
 ## Installation
 

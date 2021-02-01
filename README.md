@@ -20,11 +20,17 @@ Pi-hole: 192.168.0.100
 
 ## Installation
 
-The easiest way to install an OpenVPN onto your Pi 4 device is to run the following command at the terminal:
+The easiest way to install OpenVPN onto your Pi 4 device is to run the following command at the terminal:
 ```
 curl -L https://install.pivpn.io | bash
 ```
 During installation, you will be prompted to configure items like a static IP address, OpenVPN server port number, upstream DNS resolver (can be Cloudflare's 1.1.1.1 for now, but will be changed to the IP address of Pi-Hole once it is configured), and whether personal devices will be connecting via your home router's public IP address or a DNS name. This [video](https://www.youtube.com/watch?v=15VjDVCISj0) covers how to set up OpenVPN on a Pi in reasonable depth.
+
+The easiest way to install OpenMediaVault onto your Pi 4 device is to run the following command at the terminal:
+```
+wget -O - https://github.com/OpenMediaVault-Plugin-Developers/installScript/raw/master/install | sudo bash
+```
+This [article](https://dbtechreviews.com/2019/12/how-to-install-openmediavault-on-raspberry-pi-4/) covers how to install and set up OpenMediaVault in reasonable depth.
 
 ## High Level Description of Scripts Used
 

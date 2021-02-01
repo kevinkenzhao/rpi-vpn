@@ -26,6 +26,22 @@ curl -L https://install.pivpn.io | bash
 ```
 During installation, you will be prompted to configure items like a static IP address, OpenVPN server port number, upstream DNS resolver (can be Cloudflare's 1.1.1.1 for now, but will be changed to the IP address of Pi-Hole once it is configured), and whether personal devices will be connecting via your home router's public IP address or a DNS name. This [video](https://www.youtube.com/watch?v=15VjDVCISj0) covers how to set up OpenVPN on a Pi in reasonable depth.
 
+#### Inability to resolve URLs
+
+Shortly prompting you to enable/disable unattended upgrades, the auto-install script will restart the openvpn service, causing a disruption in name resolution (ie. no longer able to access resources by their FQDN):
+```
+$SUDO systemctl enable openvpn.service &> /dev/null
+$SUDO systemctl restart openvpn.service
+```
+If this occurs, navigate to the ```/etc/resolv.conf```file, which will (likely) have no name servers specified. Add the following lines using sudo:
+```
+nameserver 1.1.1.1
+nameserver 1.1.1.2
+```
+You should be able to to resume configuration of unattended upgrades thereafter.
+
+----
+
 The easiest way to install OpenMediaVault onto your Pi 4 device is to run the following command at the terminal:
 ```
 wget -O - https://github.com/OpenMediaVault-Plugin-Developers/installScript/raw/master/install | sudo bash

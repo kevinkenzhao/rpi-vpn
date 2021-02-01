@@ -10,7 +10,7 @@ To achieve the flow described above, we will create three bash scripts and make 
 - Raspberry Pi 4
 - OpenMediaVault with SMB/CIFS enabled, OMV-Extras (Docker and Portainer) installed
 - Pihole (Docker image)
-- Subscription to 3rd Party VPN service and their respective .ovpn client configuration files
+- Subscription to 3rd Party VPN service and access to .ovpn configuration files
 
 ## Static IP Addresses
 
@@ -30,12 +30,17 @@ During installation, you will be prompted to configure items like a static IP ad
 
 **firewall-openvpn-rules.sh** applies iptables NAT and Forwarding rules between the tunnels from our OpenVPN client(s) to the OpenVPN server and from the Pi to ProtonVPN.
 
-**up.sh** is executed upon connection to ProtonVPN. To achieve this, we must include the following in our .ovpn config file which we had downloaded from the ProtonVPN portal:
+**pihole_while_vpn.sh** creates a macvlan bridge on eth0, adds 192.168.0.100/32 to the bridge, and creates a route to 192.168.0.0/24.
+
+**up.sh** is executed upon connection to ProtonVPN. Similarly, **down.sh** is executed upon connnection teardown. To achieve this, we must include the following in our .ovpn config file which we had downloaded from the ProtonVPN portal:
 ```
-script-security 2
-up /etc/openvpn/up.sh
+--script-security 2
+--up /etc/openvpn/up.sh
+--down /etc/openvpn/down.sh
 ```
-Similarly, **down.sh** is executed upon teardown of connection to ProtonVPN.
+
+To automate the login process, we log our ProtonVPN credentials into a text file and pass it into the .ovpn configuration using the ```auth-user-pass /etc/openvpn/login.txt``` directive.
+##### Warning: credentials are neither encrypted nor encoded
 
 ## Remediating DNS Leak
 

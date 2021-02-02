@@ -38,7 +38,7 @@ If this occurs, navigate to the ```/etc/resolv.conf```file, which will (likely) 
 nameserver 1.1.1.1
 nameserver 1.1.1.2
 ```
-You should be able to to resume configuration of unattended upgrades thereafter.
+Otherwise, the installer with an error pertaining to theinability to locate "http://raspbian.raspberrypi.org/raspbian/pool/main/d/distro-info/python3-distro-info_0.21_all.deb". You should be able to to resume configuration of unattended upgrades thereafter.
 
 ----
 

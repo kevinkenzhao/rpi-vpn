@@ -22,13 +22,15 @@ Pi-hole: 192.168.0.100
 
 ### OpenMediaVault
 
-The easiest way to install OpenMediaVault onto your Pi 4 device is to run the following command at the terminal:
+The easiest way to install OpenMediaVault is by running the following command at the terminal:
 ```
 wget -O - https://github.com/OpenMediaVault-Plugin-Developers/installScript/raw/master/install | sudo bash
 ```
 This [article](https://dbtechreviews.com/2019/12/how-to-install-openmediavault-on-raspberry-pi-4/) covers how to install and set up OpenMediaVault in reasonable depth.
 
-Install Docker and Portainer and ensure they are both running. Curl the Pihole Docker script into your $HOME directory:
+Install Docker and Portainer via OMV-Extras at the left-hand menu and ensure they are both running. Then, run ```sudo docker swarm init --advertise-addr {ipofmaininterface}``` and reboot.
+
+Curl the Pihole Docker script into your $HOME directory:
 
 ```
 curl -L https://raw.githubusercontent.com/pi-hole/docker-pi-hole/master/docker_run.sh > docker-pihole.sh
@@ -44,20 +46,22 @@ Finally, enable the execution bit on the script for the user: ```sudo chmod u+x 
 
 ### OpenVPN
 
-The easiest way to install OpenVPN onto your Pi 4 device is to run the following command at the terminal:
+The easiest way to install OpenVPN is by running the following command at the terminal:
 ```
 curl -L https://install.pivpn.io | bash
 ```
-During installation, you will be prompted to configure items like a static IP address, OpenVPN server port number, upstream DNS resolver (can be Cloudflare's 1.1.1.1 for now, but will be changed to the IP address of Pi-Hole once it is configured), and whether personal devices will be connecting via your home router's public IP address or a DNS name. This [video](https://www.youtube.com/watch?v=15VjDVCISj0) covers how to set up OpenVPN on a Pi in reasonable depth.
+During installation, you will be prompted to configure items like a static IP address, OpenVPN server port number, upstream DNS resolver (select local Pihole option), and whether personal devices will be connecting via your home router's public IP address or a DNS name. This [video](https://www.youtube.com/watch?v=15VjDVCISj0) covers how to set up OpenVPN on a Pi in reasonable depth.
 
 #### Inability to resolve URLs
 
-Shortly prompting you to enable/disable unattended upgrades, the auto-install script will restart the openvpn service, causing a disruption in name resolution (ie. no longer able to access resources by their FQDN):
+Before prompting you to enable/disable unattended upgrades, the auto-install script restarts the OpenVPN service,
 ```
 $SUDO systemctl enable openvpn.service &> /dev/null
 $SUDO systemctl restart openvpn.service
 ```
-If this occurs, navigate to the ```/etc/resolv.conf```file, which will (likely) have no name servers specified. Add the following lines using sudo:
+which may affect name resolution for the host.
+
+If this occurs, navigate to the ```/etc/resolv.conf```file and add the following lines:
 ```
 nameserver 1.1.1.1
 nameserver 1.1.1.2

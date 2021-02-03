@@ -61,10 +61,9 @@ $SUDO systemctl restart openvpn.service
 ```
 which may affect name resolution for the host.
 
-If this occurs, navigate to the ```/etc/resolv.conf```file and add the following lines:
+If this occurs, navigate to the ```/etc/resolv.conf```file and add the following line:
 ```
 nameserver 1.1.1.1
-nameserver 1.1.1.2
 ```
 Otherwise, the installer will exit with an error pertaining to the inability to locate "http://raspbian.raspberrypi.org/raspbian/pool/main/d/distro-info/python3-distro-info_0.21_all.deb". You should be able to to resume configuration of unattended upgrades thereafter.
 
@@ -83,8 +82,7 @@ Otherwise, the installer will exit with an error pertaining to the inability to 
 --down /etc/openvpn/down.sh
 ```
 
-To automate the login process, we log our ProtonVPN credentials into a text file and pass it into the .ovpn configuration using the ```auth-user-pass /etc/openvpn/login.txt``` directive.
-##### Warning: credentials are neither encrypted nor encoded
+To automate the login process, we log our ProtonVPN credentials into a text file and pass it into the .ovpn configuration using the ```auth-user-pass /etc/openvpn/login.txt``` directive. **Warning: credentials are not encrypted/obfuscated**
 
 ## Remediating DNS Leak
 

@@ -14,9 +14,9 @@ To achieve the flow described above, we will create three bash scripts and make 
 
 ## Static IP Addresses
 
-Raspberry Pi: 192.168.0.4/24
+OpenMediaVault: 192.168.0.4:8001
 OpenVPN server virtual network: 10.8.0.0/24
-Pi-hole: 192.168.0.100
+Pi-hole: 192.168.0.4:80
 
 ## Installation
 
@@ -39,8 +39,8 @@ Add/change the following:
 
 - Add ```-e WEBPASSWORD="password" \``` where **password** is your desired admin console password.
 - ```-p 80:80 \```: change **80** before the colon to any other unused port as openmediavault is listening on port 80. Or, we could configure OMV to listen on a different port and leave this configuration as is.
-- Optional: ```-e ServerIP="127.0.0.1" \``` change **127.0.0.1** to **192.168.0.100**, which will be used in our macvlan interface. Macvlan creation allows the Pihole to appear as a physical device on the host network with valid IP/MAC addresses.
 - Replace **${PIHOLE_BASE}** in ```-v "${PIHOLE_BASE}/etc-pihole/:/etc/pihole/" \``` and ```-v "${PIHOLE_BASE}/etc-dnsmasq.d/:/etc/dnsmasq.d/" \``` with a folder of your choice. If unchanged, the script will create the folders in the same directory as that of docker-pihole.sh.
+- *Optional: ```-e ServerIP="127.0.0.1" \``` change **127.0.0.1** to **192.168.0.100**, which will be used in our macvlan interface. Macvlan creation allows the Pihole to appear as a physical device on the host network with valid IP/MAC addresses.*
 
 Finally, enable the execution bit on the script for the user: ```sudo chmod u+x docker-pihole.sh``` and run! If performed successfully, the container should appear shortly in Portainer.
 
@@ -89,3 +89,7 @@ To automate the login process, we log our ProtonVPN credentials into a text file
 By default, a client which does not have a static DNS configuration set relies on the default gateway for name resolution. On a workstation, for example, the traffic will be sent outside of the tunnel to the router. Similarly, if a mobile device is connected to our Pi OpenVPN server, DNS traffic will be router to the carrier. 
 
 Fortunately, we can correct this issue by appending the ```dhcp-option DNS {piholeip}``` directive to the client .ovpn file **or** ```push "dhcp-option DNS {ip}"``` directive on the server configuration at /etc/openvpn/server.conf.
+
+## Macvlan Foray
+
+We set up a [macvlan network in portainer](https://web.archive.org/web/20201112013419/https://www.portainer.io/2018/09/using-macvlan-portainer-io/), tethered the Pihole container to it, and removed the Docker bridge network. As a result, Pihole would now be reachable at 192.168.0.100:80 (but not 192.168.0.4:80). However, 192.168.0.100:80 would become inaccessible from the Docker host (there are [numerous](http://docs.docker.oeynet.com/engine/userguide/networking/get-started-macvlan/) [mentions](https://stackoverflow.com/questions/63203538/docker-macvlan-no-route-to-host-container) about why this is the case). Because all traffic is tunneled through the Pi, all network activity requiring name resolution will be rendered moot (ie. *ping 8.8.8.8* or *nslookup google.com 8.8.8.8* would still be functional). We tried exposing a macvlan interface via the **pihole_while_vpn.sh** script and configuring 192.168.0.100 as a static name server in /etc/dhcpcd.conf, to no avail.

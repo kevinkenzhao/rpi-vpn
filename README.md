@@ -48,6 +48,20 @@ wget -O - https://github.com/OpenMediaVault-Plugin-Developers/installScript/raw/
 ```
 This [article](https://dbtechreviews.com/2019/12/how-to-install-openmediavault-on-raspberry-pi-4/) covers how to install and set up OpenMediaVault in reasonable depth.
 
+After Docker and Portainer are installed and running, download the Pihole Docker script into your $HOME directory:
+
+```
+curl -L https://raw.githubusercontent.com/pi-hole/docker-pi-hole/master/docker_run.sh > docker-pihole.sh
+```
+Add/change the following:
+
+- Add ```-e WEBPASSWORD="password" \``` where **password** is your desired admin console password.
+- ```-p 80:80 \```: change **80** before the colon to any other unused port as openmediavault is listening on port 80. Or, we could configure OMV to listen on a different port and leave this configuration as is.
+- ```-e ServerIP="127.0.0.1" \``` change **127.0.0.1** to **192.168.0.100**, which will be used in our macvlan interface
+- Optionally, you may replace **${PIHOLE_BASE}** in ```-v "${PIHOLE_BASE}/etc-pihole/:/etc/pihole/" \``` and ```-v "${PIHOLE_BASE}/etc-dnsmasq.d/:/etc/dnsmasq.d/" \``` with a folder of your choice. By default it will create the folder in the same directory from which the docker-pihole.sh script is executed.
+
+Finally, enable the execution bit on the script for the user: ```sudo chmod u+x docker-pihole.sh``` and run! If performed successfully, the container should appear shortly in Portainer.
+
 ## High Level Description of Scripts Used
 
 **firewall-openvpn-rules.sh** applies iptables NAT and Forwarding rules between the tunnels from our OpenVPN client(s) to the OpenVPN server and from the Pi to ProtonVPN.

@@ -20,6 +20,30 @@ Pi-hole: 192.168.0.100
 
 ## Installation
 
+### OpenMediaVault
+
+The easiest way to install OpenMediaVault onto your Pi 4 device is to run the following command at the terminal:
+```
+wget -O - https://github.com/OpenMediaVault-Plugin-Developers/installScript/raw/master/install | sudo bash
+```
+This [article](https://dbtechreviews.com/2019/12/how-to-install-openmediavault-on-raspberry-pi-4/) covers how to install and set up OpenMediaVault in reasonable depth.
+
+Install Docker and Portainer and ensure they are both running. Curl the Pihole Docker script into your $HOME directory:
+
+```
+curl -L https://raw.githubusercontent.com/pi-hole/docker-pi-hole/master/docker_run.sh > docker-pihole.sh
+```
+Add/change the following:
+
+- Add ```-e WEBPASSWORD="password" \``` where **password** is your desired admin console password.
+- ```-p 80:80 \```: change **80** before the colon to any other unused port as openmediavault is listening on port 80. Or, we could configure OMV to listen on a different port and leave this configuration as is.
+- Optional: ```-e ServerIP="127.0.0.1" \``` change **127.0.0.1** to **192.168.0.100**, which will be used in our macvlan interface. Macvlan creation allows the Pihole to appear as a physical device on the host network with valid IP/MAC addresses.
+- Replace **${PIHOLE_BASE}** in ```-v "${PIHOLE_BASE}/etc-pihole/:/etc/pihole/" \``` and ```-v "${PIHOLE_BASE}/etc-dnsmasq.d/:/etc/dnsmasq.d/" \``` with a folder of your choice. If unchanged, the script will create the folders in the same directory as that of docker-pihole.sh.
+
+Finally, enable the execution bit on the script for the user: ```sudo chmod u+x docker-pihole.sh``` and run! If performed successfully, the container should appear shortly in Portainer.
+
+### OpenVPN
+
 The easiest way to install OpenVPN onto your Pi 4 device is to run the following command at the terminal:
 ```
 curl -L https://install.pivpn.io | bash
@@ -41,26 +65,6 @@ nameserver 1.1.1.2
 Otherwise, the installer will exit with an error pertaining to the inability to locate "http://raspbian.raspberrypi.org/raspbian/pool/main/d/distro-info/python3-distro-info_0.21_all.deb". You should be able to to resume configuration of unattended upgrades thereafter.
 
 ----
-
-The easiest way to install OpenMediaVault onto your Pi 4 device is to run the following command at the terminal:
-```
-wget -O - https://github.com/OpenMediaVault-Plugin-Developers/installScript/raw/master/install | sudo bash
-```
-This [article](https://dbtechreviews.com/2019/12/how-to-install-openmediavault-on-raspberry-pi-4/) covers how to install and set up OpenMediaVault in reasonable depth.
-
-After Docker and Portainer are installed and running, download the Pihole Docker script into your $HOME directory:
-
-```
-curl -L https://raw.githubusercontent.com/pi-hole/docker-pi-hole/master/docker_run.sh > docker-pihole.sh
-```
-Add/change the following:
-
-- Add ```-e WEBPASSWORD="password" \``` where **password** is your desired admin console password.
-- ```-p 80:80 \```: change **80** before the colon to any other unused port as openmediavault is listening on port 80. Or, we could configure OMV to listen on a different port and leave this configuration as is.
-- ```-e ServerIP="127.0.0.1" \``` change **127.0.0.1** to **192.168.0.100**, which will be used in our macvlan interface
-- Optionally, you may replace **${PIHOLE_BASE}** in ```-v "${PIHOLE_BASE}/etc-pihole/:/etc/pihole/" \``` and ```-v "${PIHOLE_BASE}/etc-dnsmasq.d/:/etc/dnsmasq.d/" \``` with a folder of your choice. By default it will create the folder in the same directory from which the docker-pihole.sh script is executed.
-
-Finally, enable the execution bit on the script for the user: ```sudo chmod u+x docker-pihole.sh``` and run! If performed successfully, the container should appear shortly in Portainer.
 
 ## High Level Description of Scripts Used
 
